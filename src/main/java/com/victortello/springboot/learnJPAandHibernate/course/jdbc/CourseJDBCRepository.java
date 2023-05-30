@@ -1,6 +1,7 @@
 package com.victortello.springboot.learnJPAandHibernate.course.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -26,6 +27,17 @@ public class CourseJDBCRepository {
 			  id = ?;
 			""";
 
+	private static String SELECT_QUERY = """
+				select
+			  id,
+			  name,
+			  author
+			from
+			  course
+			where
+			  id = ?;
+			""";
+
 	public void insert(Course course) {
 		sprinJdbcTemplate.update(
 				INSERT_QUERY, course.getId(), course.getName(), course.getAuthor());
@@ -34,6 +46,12 @@ public class CourseJDBCRepository {
 	public void deleteById(long id) {
 
 		sprinJdbcTemplate.update(DELETE_QUERY, id);
+
+	}
+
+	public Course findById(long id) {
+		return sprinJdbcTemplate.queryForObject(
+				SELECT_QUERY, new BeanPropertyRowMapper<>(Course.class), id);
 
 	}
 
